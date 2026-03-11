@@ -1,0 +1,3 @@
+fast api
+uvicorn[standard]
+pydantic

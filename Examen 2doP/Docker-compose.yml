@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    container_name: Examen
+    ports:
+        "5000:5000"
+    volumes:
+        ./app:/app/app
