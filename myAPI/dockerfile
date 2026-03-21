@@ -5,10 +5,10 @@ FROM python:3.12-slim
 WORKDIR /app
 
 #Copiamos los requerimientos del servidor
-    COPY requierements.txt .
+    COPY requirements.txt .
 
 #Instalamos los requerimientos
-RUN pip install --no-cache-dir -r requierements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 #Copiar el codigo del API
 COPY ./app ./app
