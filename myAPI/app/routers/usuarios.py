@@ -1,15 +1,15 @@
 import asyncio
 
 from fastapi import status, HTTPException, Depends, APIRouter
-from app.data.database import SessionLocal
+from app.data.database import usuarios
 from app.models.usuarios import crear_usuario
 from app.security.auth import verificar_peticion
 from typing import Optional
 
 from sqlalchemy.orm import Session
 from app.data.db import get_db
-from app.data.usuario import usuario as usuarioDB
-from myAPI.app.data import db
+from app.data.database import usuarios as usuarioDB
+from app.data import db
 
 router = APIRouter(
     prefix="/v1/usuarios", tags = ['CRUD HTTP']
