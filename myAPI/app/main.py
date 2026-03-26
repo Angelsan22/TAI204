@@ -1,15 +1,16 @@
 #Se queda 
 from fastapi import FastAPI
 from app.routers import usuarios, varios
+from app.data.db import engine
+from app.data import usuario 
 
-
-
+usuario.Base.metadata.create_all(bind= engine)
 
 #instancia del servidor
 #instacioa del servidor 
 app = FastAPI(
    title="Mi primer API",
-   description="Alberto Adrian Muñiz Lopez",
+   description="Sánchez Linares José Ángel",
    version="1.0"
 )
 

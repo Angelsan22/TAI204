@@ -1,17 +1,25 @@
+import asyncio
+
 from fastapi import status, HTTPException, Depends, APIRouter
-from app.data.database import usuarios
+from app.data.database import SessionLocal
 from app.models.usuarios import crear_usuario
 from app.security.auth import verificar_peticion
 from typing import Optional
+
+from sqlalchemy.orm import Session
+from app.data.db import get_db
+from app.data.usuario import usuario as usuarioDB
+from myAPI.app.data import db
 
 router = APIRouter(
     prefix="/v1/usuarios", tags = ['CRUD HTTP']
 )
 
 
+
 #Endpoints
 @router.get("/", tags=['Inicio'])
-async def bienvenida():
+async def bienvenida(): 
     return {"mesaje": "Bienvenido a FastAPI"}
 
 
@@ -37,30 +45,31 @@ async def consultatodos(id:Optional[int] = None):
                 return {"mesaje": "Usuario encontrado",
                         "usuario": usuarioK,
                         "status": "200"}
-        return {"mesaje": "Usuarios no encontrado", "status":"200"}
+        return {"mesaje": "Usuarios no encontrado", "status":"200"  }
     else:
         return {"mesaje": "No se proporciono id", "status":"200"}
  
-@router.get("/", tags=['CRUD HTTP'])
-async def consultaT():
+@router.get("/")
+async def leer_usuarios(db: Session = Depends(get_db)):
+
+    query = db.query(usuarioDB).all()
     return{
-        "status":"200",
-        "total": len(usuarios),
-        "Usuarios":usuarios
+        "status": "200",
+        "total": len(query),
+        "usuarios": query
     }
 
+
 @router.post("/", tags=['CRUD HTTP'])
-async def agregar_usuario(usuario:crear_usuario):
-    for usr in usuarios:
-        if usr["id"] == usuario.id:
-            raise HTTPException(
-                status_code= 400,
-                detail="El id ya existe"
-                )
-    usuarios.append(usuario)
+async def agregar_usuario(usuarioP:crear_usuario):
+    usuarioNuevo = usuarioDB(nombre=usuarioP.nombre, edad=usuarioP.edad)
+    db.add(usuarioNuevo)
+    db.commit()
+    db.refresh(usuarioNuevo)
+
     return{
         "Mensaje":"Usuario agregado",
-        "usuario": usuario,
+        "usuario": usuarioP,
         "status":"200"
     }
 
